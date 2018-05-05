@@ -1,0 +1,28 @@
+% function main()
+%     computeTime=zeros(2,4);
+%     size=[10,50,100,200];
+%     %每种计算1000个
+%     times=1;
+%     for j=1:4
+%         for i=1:times
+%             [time1,time2]=produceSolveComputeTime(size(j));
+%             computeTime(1,j)=computeTime(1,j)+time1;
+%             computeTime(2,j)=computeTime(2,j)+time2;
+%         end
+%     end
+%     computeTime=computeTime/times;
+%     plot(size(:),computeTime(1,:),'-',size(:),computeTime(2,:),'-');
+%     xlim([0,210]);
+%     legend('高斯消去法','列主元消去法');
+% end
+
+function time1 = produceSolveComputeTime(size)
+    A=randn(size);
+    x=randn(size,1);
+    b=A*x;
+    tic;
+    Jacobi(A,b);
+    time1=toc;
+end
+
+function Jacobi(

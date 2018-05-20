@@ -1,10 +1,12 @@
+%实现高斯消去法、列主元消去法。
+%A与b中的元素服从独立同分布的正态分布。令 n=10、50、100、200，测试计算时间并绘制曲线。
 main();
 
 function main()
     computeTime=zeros(2,4);
     size=[10,50,100,200];
-    %每种计算1000个
-    times=1000;
+    %每种计算100个
+    times=100;
     for j=1:4
         for i=1:times
             [time1,time2]=produceSolveComputeTime(size(j));
@@ -16,6 +18,7 @@ function main()
     computeTime=computeTime/times;
     plot(size(:),computeTime(1,:),'-',size(:),computeTime(2,:),'-');
     xlim([0,210]);
+    set(gca,'XTick',[10,50,100,200]);
     legend('高斯消去法','列主元消去法');
 end
 
@@ -33,7 +36,7 @@ function [time1,time2] = produceSolveComputeTime(size)
 end
 
 %高斯消去法
-function x = GaussianElimination(A,b);
+function x = GaussianElimination(A,b)
     dim=size(A,1);
     %消去
     for i=1:dim
@@ -58,7 +61,7 @@ function x = GaussianElimination(A,b);
 end
 
 %列主元消去法
-function x = EliminationWithMaximalColumnPivoting(A,b);
+function x = EliminationWithMaximalColumnPivoting(A,b)
     dim=size(A,1);
     
     %消去

@@ -12,6 +12,7 @@ function main()
             computeTime(2,j)=computeTime(2,j)+time2;
         end
     end
+    %Æ½¾ù
     computeTime=computeTime/times;
     plot(size(:),computeTime(1,:),'-',size(:),computeTime(2,:),'-');
     xlim([0,210]);

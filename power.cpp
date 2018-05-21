@@ -21,7 +21,9 @@ double slove(double v[N])
 int main()    
 {
     //data input
-double A[N][N]={1.0,1.0,0.5,1.0,1.0,0.25,0.5,0.25,2.0};
+    double A[N][N]={1.0,    1.0,    0.5,
+                    1.0,    1.0,    0.25,
+                    0.5,    0.25,   2.0};
     double x[N]={1,1,1};
     double v[N]={0,0,0};
     double u[N]={0,0,0};

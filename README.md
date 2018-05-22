@@ -2,7 +2,7 @@
 ### 问题描述
 求解线性方程组 Ax=b，其中 A 为 nxn 维的已知矩阵，b 为 n 维的已知向量，x 为 n 维的未知向量。A 与 b 中的元素服从独立同分布的正态分布。
 ### 算法设计
-1. 高斯消去法
+1. 高斯消去法  
 首先，要将 L_1 以下的等式中的 x 消除，然后再将 L_k (k=1,2,...,n-1) 以下的等式中的 y 消除。这样可使整个方程组变成一个三角形似的格式。之后再将已得出的答案一个个地代入已被简化的等式中的未知数中，就可求出其余的答案了。
 ```matlab
 function x = GaussianElimination(A,b)
@@ -29,7 +29,7 @@ function x = GaussianElimination(A,b)
     end
 end
 ```
-2. 列主元消去法
+2. 列主元消去法  
 在进行第 k (k=1,2,...,n-1) 步消元时，从第 k 列的 a_{kk} 及其以下的各元素中选取绝对值最大的元素，然后通过行变换将它交换到主元素 a_{kk} 的位置上，再进行消元。
 ```matlab
 function x = EliminationWithMaximalColumnPivoting(A,b)
@@ -104,9 +104,192 @@ function [time1,time2] = produceSolveComputeTime(size)
     time2=toc;
 end
 ```
-### 结果分析
-![](fig/Gau_MaxCol.svg)
+![](fig/Gau_MaxCol.svg)  
 观察计算时间，列主元消去法时间略长，因为涉及主元的寻找和行变换。
+
+## 二
+### 问题描述
+求解线性方程组 Ax=b，其中 A 为 nxn 维的已知矩阵，b 为 n 维的已知向量，x 为 n 维的未知向量。A 为对称正定矩阵，其特征值服从独立同分布的 [0,1] 间的均匀分布; b 中的元素服从独立同分布的正态分布。
+### 算法设计
+D L U 是什么？？？？？
+1. Jacobi 迭代法 
+x=J*x_k+f，其中？？？？J=D^(-1)*(L+U)，f=D^(-1)*b 。
+```matlab
+function [x,times]=Jacobi(A,b)
+    dim=size(A,1);
+    x=zeros(dim,1);
+    D=diag(diag(A));
+    %J=D^(-1)*(L+U)
+    J=D\(-tril(A,-1)-triu(A,1));
+    %f=D^(-1)*b
+    f=D\b;
+    x_k=zeros(dim,1);
+    times=0;
+    while 1
+        x=J*x_k+f;
+        %精度，用无穷范数（向量的所有元素的绝对值中最大的）
+         if norm(x-x_k,inf)<1e-5
+            break;
+        end
+        x_k=x;
+        %迭代次数限制
+        times=times+1;
+        if times==29000
+            error('超出迭代次数限制');
+        end
+    end
+end
+```
+2. Gauss-Seidel 迭代法  
+x=G*x_k+f，其中？？？？G=(D-L)^(-1)*U，f=D^(-1)*b 。
+```matlab
+function [x,times]=GaussSeidel(A,b)
+    dim=size(A,1);
+    x=zeros(dim,1);
+    D=diag(diag(A));
+    %G=(D-L)^(-1)*U
+    G=(D+tril(A,-1))\(-triu(A,1));
+    %f=D^(-1)*b
+    f=(D+tril(A,-1))\b;
+    x_k=zeros(dim,1);
+    times=0;
+    while 1
+        x=G*x_k+f;
+        %精度，用无穷范数（向量的所有元素的绝对值中最大的）
+         if norm(x-x_k,inf)<1e-5
+            break;
+        end
+        x_k=x;
+        %迭代次数限制
+        times=times+1;
+        if times==29000
+            error('超出迭代次数限制');
+        end
+    end
+end
+```
+3. 逐次超松弛迭代法  
+x=Lw*x_k+f，其中？？？？Lw=(D-w*L)\((1-w)*D+w*U)，f=w(D-wL)^(-1)b 。
+```matlab
+function [x,times]=SOR(A,b,w)
+    dim=size(A,1);
+    x=zeros(dim,1);
+    D=diag(diag(A));
+    L=-tril(A,-1);
+    U=-triu(A,1);
+    %Lw=(D-wL)^(-1)((1-w)D+wU)
+    Lw=(D-w*L)\((1-w)*D+w*U);
+    %f=w(D-wL)^(-1)b
+    f=w*(D-w*L)^(-1)*b;
+    x_k=zeros(dim,1);
+    times=0;
+    while 1
+        x=Lw*x_k+f;
+        %精度，用无穷范数（向量的所有元素的绝对值中最大的）
+        if norm(x-x_k,inf)<1e-5
+            break;
+        end
+        x_k=x;
+        %迭代次数限制
+        times=times+1;
+        if times==29000
+            error('超出迭代次数限制');
+        end
+    end
+end
+```
+4. 共轭梯度法  
+![](fig/CGalgorithm.png)
+```matlab
+function [x,times]=CG(A,b)
+    dim=size(A,1);
+    x=zeros(dim,1);
+    %r0=b-A*x0
+    r=b-A*x;
+    %p0=r0
+    p=r;
+    times=1;
+    while 1
+        %r=0或(p,Ap)=0，计算停止
+        if norm(r,2)<1e-10||dot(p,A*p)<1e-10
+            break;
+        end
+        a=dot(r,r)/dot(p,A*p);
+        x=x+a*p;
+        r_kp1=r-a*A*p;
+        beta=dot(r_kp1,r_kp1)/dot(r,r);
+        p=r_kp1+beta*p;
+        r=r_kp1;
+        %迭代次数限制
+        times=times+1;   
+        if times==29000
+            error('超出迭代次数限制');
+        end
+    end
+end
+```
+### 数值实验一
+1. 令 n=10、50、100、200，分别绘制出算法的收敛曲线，横坐标为迭代步数，纵坐标为相对误差。
+```matlab
+produceSolveTimes(10,50);
+produceSolveTimes(50,100);
+produceSolveTimes(100,150);
+produceSolveTimes(200,200);
+% limit: 迭代次数限制
+function produceSolveTimes(size,limit)
+    % 每种计算1000个
+    times=1000;
+    timesArr1=zeros(1,limit);
+    timesArr2=zeros(1,limit);
+    timesArr3=zeros(1,limit);
+    timesArr4=zeros(1,limit);
+    for i=1:times
+        % 利用随机对角矩阵和随机正交矩阵生成随机对称正定矩阵A，同时满足2D-A正定
+        while 1
+            v=diag(rand(size,1));
+            u=orth(randn(size));
+            A=u'*v*u;
+            % p1为0时A正定
+            [R,p1]=chol(A);
+            % 2D-A
+            [R,p2]=chol(2*diag(diag(A))-A);
+            if p1==0&&p2==0
+                break;
+            end
+        end
+        x=rand(size,1);
+        b=A*x;
+        timesArr1=timesArr1+Jacobi(A,b,x,limit);
+        timesArr2=timesArr2+GaussSeidel(A,b,x,limit);
+        timesArr3=timesArr3+SOR(A,b,1.23,x,limit);
+        timesArr4=timesArr4+CG(A,b,x,limit);
+    end
+    % 平均
+    timesArr1=timesArr1/times;
+    timesArr2=timesArr2/times;
+    timesArr3=timesArr3/times;
+    timesArr4=timesArr4/times;
+    figure;
+    plot(timesArr1(1,:),'-');
+    hold on;
+    plot(timesArr2(1,:),'-');
+    hold on;
+    plot(timesArr3(1,:),'-');
+    hold on;
+    plot(timesArr4(1,:),'-');
+    legend('Jacobi','Gauss-Seidel','SOR','CG');
+    xlim([0,limit+1]);
+end
+```
+横坐标为迭代步数，纵坐标为相对误差的收敛曲线。
+![](fig/10dim)  
+n=10  
+![](fig/50dim)  
+n=50  
+![](fig/100dim)  
+n=100  
+![](fig/200dim)  
+n=200
 
 ```matlab
 % 在 Epinions 社交数据集(https://snap.stanford.edu/data/soc-Epinions1.html)中， 每个网络节点可以选择信任其它节点。

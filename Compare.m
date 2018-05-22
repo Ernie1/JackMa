@@ -1,8 +1,8 @@
-%比较 Jacobi 迭代法、Gauss-Seidel 迭代法、逐次超松弛迭代法、共轭梯度法与高斯消去法、列主元消去法的计算时间。
+% 比较 Jacobi 迭代法、Gauss-Seidel 迭代法、逐次超松弛迭代法、共轭梯度法与高斯消去法、列主元消去法的计算时间。
 compareSolveTime();
 function compareSolveTime()
     size=[10,50,100,200];
-    %每种计算100个
+    % 每种计算100个
     times=100;
     timeArr1=zeros(1,4);
     timeArr2=zeros(1,4);
@@ -12,14 +12,14 @@ function compareSolveTime()
     timeArr6=zeros(1,4);
     for j=1:4
         for i=1:times
-            %利用随机对角矩阵和随机正交矩阵生成随机对称正定矩阵A，同时满足2D-A正定
+            % 利用随机对角矩阵和随机正交矩阵生成随机对称正定矩阵A，同时满足2D-A正定
             while 1
                 v=diag(rand(size(j),1));
                 u=orth(randn(size(j)));
                 A=u'*v*u;
-                %p1为0时A正定
+                % p1为0时A正定
                 [R,p1]=chol(A);
-                %2D-A
+                % 2D-A
                 [R,p2]=chol(2*diag(diag(A))-A);
                 if p1==0&&p2==0
                     break;
@@ -53,7 +53,7 @@ function compareSolveTime()
             timeArr6(j)=timeArr6(j)+time6;
         end
     end
-    %平均
+    % 平均
     timeArr1=timeArr1/times;
     timeArr2=timeArr2/times;
     timeArr3=timeArr3/times;
@@ -70,20 +70,20 @@ function Jacobi(A,b)
     dim=size(A,1);
     x=zeros(dim,1);
     D=diag(diag(A));
-    %J=D^(-1)*(L+U)
+    % J=D^(-1)*(L+U)
     J=D\(-tril(A,-1)-triu(A,1));
-    %f=D^(-1)*b
+    % f=D^(-1)*b
     f=D\b;
     x_k=zeros(dim,1);
     times=0;
     while 1
         x=J*x_k+f;
-        %精度，用无穷范数（向量的所有元素的绝对值中最大的）
+        % 精度，用无穷范数（向量的所有元素的绝对值中最大的）
          if norm(x-x_k,inf)<1e-5
             break;
         end
         x_k=x;
-        %迭代次数限制
+        % 迭代次数限制
         times=times+1;
         if times==290000
             error('超出迭代次数限制');
@@ -95,20 +95,20 @@ function GaussSeidel(A,b)
     dim=size(A,1);
     x=zeros(dim,1);
     D=diag(diag(A));
-    %G=(D-L)^(-1)*U
+    % G=(D-L)^(-1)*U
     G=(D+tril(A,-1))\(-triu(A,1));
-    %f=D^(-1)*b
+    % f=D^(-1)*b
     f=(D+tril(A,-1))\b;
     x_k=zeros(dim,1);
     times=0;
     while 1
         x=G*x_k+f;
-        %精度，用无穷范数（向量的所有元素的绝对值中最大的）
+        % 精度，用无穷范数（向量的所有元素的绝对值中最大的）
          if norm(x-x_k,inf)<1e-5
             break;
         end
         x_k=x;
-        %迭代次数限制
+        % 迭代次数限制
         times=times+1;
         if times==290000
             error('超出迭代次数限制');
@@ -122,20 +122,20 @@ function SOR(A,b,w)
     D=diag(diag(A));
     L=-tril(A,-1);
     U=-triu(A,1);
-    %Lw=(D-wL)^(-1)((1-w)D+wU)
+    % Lw=(D-wL)^(-1)((1-w)D+wU)
     Lw=(D-w*L)\((1-w)*D+w*U);
-    %f=w(D-wL)^(-1)b
+    % f=w(D-wL)^(-1)b
     f=w*(D-w*L)^(-1)*b;
     x_k=zeros(dim,1);
     times=0;
     while 1
         x=Lw*x_k+f;
-        %精度，用无穷范数（向量的所有元素的绝对值中最大的）
+        % 精度，用无穷范数（向量的所有元素的绝对值中最大的）
         if norm(x-x_k,inf)<1e-5
             break;
         end
         x_k=x;
-        %迭代次数限制
+        % 迭代次数限制
         times=times+1;
         if times==290000
             error('超出迭代次数限制');
@@ -146,13 +146,13 @@ end
 function CG(A,b)
     dim=size(A,1);
     x=zeros(dim,1);
-    %r0=b-A*x0
+    % r0=b-A*x0
     r=b-A*x;
-    %p0=r0
+    % p0=r0
     p=r;
     times=1;
     while 1
-        %r=0或(p,Ap)=0，计算停止
+        % r=0或(p,Ap)=0，计算停止
         if norm(r,2)<1e-10||dot(p,A*p)<1e-10
             break;
         end
@@ -162,7 +162,7 @@ function CG(A,b)
         beta=dot(r_kp1,r_kp1)/dot(r,r);
         p=r_kp1+beta*p;
         r=r_kp1;
-        %迭代次数限制
+        % 迭代次数限制
         times=times+1;   
         if times==290000
             error('超出迭代次数限制');
@@ -172,7 +172,7 @@ end
 
 function GaussianElimination(A,b)
     dim=size(A,1);
-    %消去
+    % 消去
     for i=1:dim
         if A(i,i)==0
             error('主元素=0，消去法无法进行');
@@ -180,13 +180,13 @@ function GaussianElimination(A,b)
         end
         for j=i+1:dim            
             m=A(j,i)/A(i,i);
-            %A(j,:)=A(j,:)-m*A(i,:);
+            % A(j,:)=A(j,:)-m*A(i,:);
             A(j,i+1:dim)=A(j,i+1:dim)-m*A(i,i+1:dim);
             b(j)=b(j)-m*b(i);
         end
     end
     
-    %回代
+    % 回代
     x=zeros(dim,1);
     x(dim)=b(dim)/A(dim,dim);
     for i=dim-1:-1:1
@@ -197,15 +197,15 @@ end
 function EliminationWithMaximalColumnPivoting(A,b)
     dim=size(A,1);
     
-    %消去
+    % 消去
     for i=1:dim
-        %选最大
+        % 选最大
         mcp=find(abs(A(i:dim,i))==max(abs(A(i:dim,i))))+i-1;
         if A(mcp,i)==0
             error('主元素=0，消去法无法进行');
             return;
         end
-        %交换
+        % 交换
         tem=A(mcp,:);
         A(mcp,:)=A(i,:);
         A(i,:)=tem;
@@ -214,13 +214,13 @@ function EliminationWithMaximalColumnPivoting(A,b)
         b(i)=tem;
         for j=i+1:dim
             m=A(j,i)/A(i,i);
-            %A(j,:)=A(j,:)-m*A(i,:);
+            % A(j,:)=A(j,:)-m*A(i,:);
             A(j,i+1:dim)=A(j,i+1:dim)-m*A(i,i+1:dim);
             b(j)=b(j)-m*b(i);
         end
     end
     
-    %回代
+    % 回代
     x=zeros(dim,1);
     x(dim)=b(dim)/A(dim,dim);
     for i=dim-1:-1:1

@@ -1,11 +1,11 @@
-%实现高斯消去法、列主元消去法。
-%A与b中的元素服从独立同分布的正态分布。令 n=10、50、100、200，测试计算时间并绘制曲线。
+% 实现高斯消去法、列主元消去法。
+% A与b中的元素服从独立同分布的正态分布。令 n=10、50、100、200，测试计算时间并绘制曲线。
 main();
 
 function main()
     computeTime=zeros(2,4);
     size=[10,50,100,200];
-    %每种计算100个
+    % 每种计算100个
     times=100;
     for j=1:4
         for i=1:times
@@ -14,7 +14,7 @@ function main()
             computeTime(2,j)=computeTime(2,j)+time2;
         end
     end
-    %平均
+    % 平均
     computeTime=computeTime/times;
     plot(size(:),computeTime(1,:),'-',size(:),computeTime(2,:),'-');
     xlim([0,210]);
@@ -22,7 +22,7 @@ function main()
     legend('高斯消去法','列主元消去法');
 end
 
-%随机生成独立同分布的正态分布的随机A和b，解，返回时间
+% 随机生成独立同分布的正态分布的随机A和b，解，返回时间
 function [time1,time2] = produceSolveComputeTime(size)
     A=randn(size);
     x=randn(size,1);
@@ -35,10 +35,10 @@ function [time1,time2] = produceSolveComputeTime(size)
     time2=toc;
 end
 
-%高斯消去法
+% 高斯消去法
 function x = GaussianElimination(A,b)
     dim=size(A,1);
-    %消去
+    % 消去
     for i=1:dim
         if A(i,i)==0
             error('主元素=0，消去法无法进行');
@@ -46,13 +46,13 @@ function x = GaussianElimination(A,b)
         end
         for j=i+1:dim            
             m=A(j,i)/A(i,i);
-            %A(j,:)=A(j,:)-m*A(i,:);
+            % A(j,:)=A(j,:)-m*A(i,:);
             A(j,i+1:dim)=A(j,i+1:dim)-m*A(i,i+1:dim);
             b(j)=b(j)-m*b(i);
         end
     end
     
-    %回代
+    % 回代
     x=zeros(dim,1);
     x(dim)=b(dim)/A(dim,dim);
     for i=dim-1:-1:1
@@ -60,19 +60,19 @@ function x = GaussianElimination(A,b)
     end
 end
 
-%列主元消去法
+% 列主元消去法
 function x = EliminationWithMaximalColumnPivoting(A,b)
     dim=size(A,1);
     
-    %消去
+    % 消去
     for i=1:dim
-        %选最大
+        % 选最大
         mcp=find(abs(A(i:dim,i))==max(abs(A(i:dim,i))))+i-1;
         if A(mcp,i)==0
             error('主元素=0，消去法无法进行');
             return;
         end
-        %交换
+        % 交换
         tem=A(mcp,:);
         A(mcp,:)=A(i,:);
         A(i,:)=tem;
@@ -81,13 +81,13 @@ function x = EliminationWithMaximalColumnPivoting(A,b)
         b(i)=tem;
         for j=i+1:dim
             m=A(j,i)/A(i,i);
-            %A(j,:)=A(j,:)-m*A(i,:);
+            % A(j,:)=A(j,:)-m*A(i,:);
             A(j,i+1:dim)=A(j,i+1:dim)-m*A(i,i+1:dim);
             b(j)=b(j)-m*b(i);
         end
     end
     
-    %回代
+    % 回代
     x=zeros(dim,1);
     x(dim)=b(dim)/A(dim,dim);
     for i=dim-1:-1:1

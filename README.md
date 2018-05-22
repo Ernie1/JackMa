@@ -199,7 +199,7 @@ function [x,times]=SOR(A,b,w)
 end
 ```
 4. 共轭梯度法  
-<img src="fig/CGalgorithm.png" width = "60%" height = "60%" />
+![](fig/CGalgorithm.png)
 ```matlab
 function [x,times]=CG(A,b)
     dim=size(A,1);

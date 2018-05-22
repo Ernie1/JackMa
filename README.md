@@ -104,6 +104,7 @@ function [time1,time2] = produceSolveComputeTime(size)
     time2=toc;
 end
 ```
+[完整代码](Gau_MaxCol.m)  
 ![](fig/Gau_MaxCol.svg)  
 列主元消去法时间略长，因为涉及主元的寻找和行变换。
 
@@ -527,6 +528,7 @@ R=[[0:75887]',R];
 ```matlab
 R=sortrows(R,2,'descend');
 ```
+结果：  
 &nbsp; | 1 | 2
 --- | --- | ---
 1 | 18	| 0.00326588223871137

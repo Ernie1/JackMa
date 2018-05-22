@@ -469,15 +469,15 @@ Input: A, N, R_0(initial guess)
 Output: R_{k+1}
 ```
 ### 数值实验
-手动将soc-Epinions1.txt导入数据到socEpinions1，socEpinions1是table类型，先转为数组。
+手动将 soc-Epinions1.txt 导入数据到 socEpinions1，socEpinions1 是 table 类型，先转为数组。
 ```matlab
 socEpinions1=table2array(socEpinions1);
 ```
-由于数据的节点从0开始，而matlab索引从1开始，为了方便，先给数据的节点编号都加一。
+由于数据的节点从 0 开始，而matlab索引从 1 开始，为了方便，先给数据的节点编号都加一。
 ```matlab
 socEpinions1=socEpinions1+1;
 ```
-统计每个节点发出数，即L(p_j)，存入socEpinions数组。
+统计每个节点发出数，即 L(p_j)，存入 socEpinions 数组。
 ```matlab
 socEpinions=zeros(75888,1);
 for i=1:length(socEpinions1)
@@ -485,23 +485,23 @@ for i=1:length(socEpinions1)
     socEpinions(tem)=socEpinions(tem)+1;
 end
 ```
-每个元素变成倒数，socEpinions(p_i)即为特殊矩阵中l(:,p_i)不为0时的值，保证链出概率和为1。
+每个元素变成倒数，socEpinions(p_i) 即为特殊矩阵中 l(:,p_i) 不为 0 时的值，保证链出概率和为 1。
 ```matlab
 socEpinions=1./socEpinions;
 ```
-创建稀疏矩阵A即特殊矩阵。
+创建稀疏矩阵 A 即特殊矩阵。
 ```matlab
 A=sparse(75888,75888);
 for i=1:length(socEpinions1)
     A(sub2ind(size(A),socEpinions1(i,2),socEpinions1(i,1)))=socEpinions(socEpinions1(i,1));
 end
 ```
-观察一下A。
+观察一下 A。
 ```matlab
 spy(A);
 ```
 ![](fig/sparseMatrix.svg)  
-用幂法求出R，得出PageRank。
+用幂法求出 R，得出 PageRank。
 ```matlab
 R=ones(75888,1);
 d=0.85;
@@ -517,9 +517,9 @@ while 1
     R=R_kp1;
 end
 ```
-运算结束时times为93，迭代了93次。  
+运算结束时 times 为 93，迭代了 93 次。  
   
-给R加上原来从0开始的节点编号。
+给R加上原来从 0 开始的节点编号。
 ```matlab
 R=[[0:75887]',R];
 ```
@@ -539,5 +539,6 @@ R=sortrows(R,2,'descend');
 8 | 40	| 0.00131762235101538
 9 | 1619 | 0.00110707964778898
 10 | 725 | 0.00108030426473196
-... | ... | ...
-列1为网络节点编号，列2为受信任程度的评分。
+... | ... | ...  
+
+列 1 为网络节点编号，列 2 为受信任程度的评分。

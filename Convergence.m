@@ -30,6 +30,7 @@ function produceSolveTimes(size,limit)
         b=A*x;
         timesArr1=timesArr1+Jacobi(A,b,x,limit);
         timesArr2=timesArr2+GaussSeidel(A,b,x,limit);
+        % ËÉ³ÚÒò×ÓÔİÈ¡1.23
         timesArr3=timesArr3+SOR(A,b,1.23,x,limit);
         timesArr4=timesArr4+CG(A,b,x,limit);
     end

@@ -199,7 +199,9 @@ function [x,times]=SOR(A,b,w)
 end
 ```
 4. 共轭梯度法  
-![](fig/CGalgorithm.png)
+
+<img width="450" height="363" src="fig/CGalgorithm.png"/>
+
 ```matlab
 function [x,times]=CG(A,b)
     dim=size(A,1);
@@ -261,6 +263,7 @@ function produceSolveTimes(size,limit)
         b=A*x;
         timesArr1=timesArr1+Jacobi(A,b,x,limit);
         timesArr2=timesArr2+GaussSeidel(A,b,x,limit);
+        % 松弛因子暂取1.23
         timesArr3=timesArr3+SOR(A,b,1.23,x,limit);
         timesArr4=timesArr4+CG(A,b,x,limit);
     end
@@ -281,15 +284,18 @@ function produceSolveTimes(size,limit)
     xlim([0,limit+1]);
 end
 ```
-横坐标为迭代步数，纵坐标为相对误差的收敛曲线。
 ![](fig/10dim.svg)  
-n=10
+n=10  
+
 ![](fig/50dim.svg)  
-n=50
+n=50  
+
 ![](fig/100dim.svg)  
-n=100
+n=100  
+
 ![](fig/200dim.svg)  
-n=200
+n=200  
+观察图像，n=10、50、100、200时收敛速度 共轭梯度法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法 > Jacobi 迭代法 。
 
 ```matlab
 % 在 Epinions 社交数据集(https://snap.stanford.edu/data/soc-Epinions1.html)中， 每个网络节点可以选择信任其它节点。

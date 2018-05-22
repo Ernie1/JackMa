@@ -1,4 +1,5 @@
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
 ## 一
 ### 问题描述
 求解线性方程组 $Ax=b$，其中 $A$ 为 $n\times n$ 维的已知矩阵，$b$ 为$ n $维的已知向量，$x $为 $n$ 维的未知向量。$A$ 与$ b $中的元素服从独立同分布的正态分布。

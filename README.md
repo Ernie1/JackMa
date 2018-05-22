@@ -2,7 +2,7 @@
 ### 问题描述
 求解线性方程组 Ax=b，其中 A 为 nxn 维的已知矩阵，b 为 n 维的已知向量，x 为 n 维的未知向量。A 与 b 中的元素服从独立同分布的正态分布。
 ### 算法设计
-1. 高斯消去法  
+**1. 高斯消去法**  
 首先，要将 L_1 以下的等式中的 x 消除，然后再将 L_k (k=1,2,...,n-1) 以下的等式中的 y 消除。这样可使整个方程组变成一个三角形似的格式。之后再将已得出的答案一个个地代入已被简化的等式中的未知数中，就可求出其余的答案了。
 ```matlab
 function x = GaussianElimination(A,b)
@@ -29,7 +29,7 @@ function x = GaussianElimination(A,b)
     end
 end
 ```
-2. 列主元消去法  
+**2. 列主元消去法**  
 在进行第 k (k=1,2,...,n-1) 步消元时，从第 k 列的 a_{kk} 及其以下的各元素中选取绝对值最大的元素，然后通过行变换将它交换到主元素 a_{kk} 的位置上，再进行消元。
 ```matlab
 function x = EliminationWithMaximalColumnPivoting(A,b)
@@ -112,7 +112,7 @@ end
 求解线性方程组 Ax=b，其中 A 为 nxn 维的已知矩阵，b 为 n 维的已知向量，x 为 n 维的未知向量。A 为对称正定矩阵，其特征值服从独立同分布的 [0,1] 间的均匀分布; b 中的元素服从独立同分布的正态分布。
 ### 算法设计
 D L U 是什么？？？？？
-1. Jacobi 迭代法 
+**1. Jacobi 迭代法** 
 x=J*x_k+f，其中？？？？J=D^(-1)*(L+U)，f=D^(-1)*b 。
 ```matlab
 function [x,times]=Jacobi(A,b)
@@ -140,7 +140,7 @@ function [x,times]=Jacobi(A,b)
     end
 end
 ```
-2. Gauss-Seidel 迭代法  
+**2. Gauss-Seidel 迭代法****  
 x=G*x_k+f，其中？？？？G=(D-L)^(-1)*U，f=D^(-1)*b 。
 ```matlab
 function [x,times]=GaussSeidel(A,b)
@@ -168,7 +168,7 @@ function [x,times]=GaussSeidel(A,b)
     end
 end
 ```
-3. 逐次超松弛迭代法  
+**3. 逐次超松弛迭代法**  
 x=Lw*x_k+f，其中？？？？Lw=(D-w*L)\((1-w)*D+w*U)，f=w(D-wL)^(-1)b 。
 ```matlab
 function [x,times]=SOR(A,b,w)
@@ -198,7 +198,7 @@ function [x,times]=SOR(A,b,w)
     end
 end
 ```
-4. 共轭梯度法  
+**4. 共轭梯度法**  
 
 <img width="450" height="363" src="fig/CGalgorithm.png"/>
 
@@ -231,7 +231,7 @@ function [x,times]=CG(A,b)
 end
 ```
 ### 数值实验
-1. 令 n=10、50、100、200，分别绘制出算法的收敛曲线，横坐标为迭代步数，纵坐标为相对误差。
+**1. 令 n=10、50、100、200，分别绘制出算法的收敛曲线**
 ```matlab
 produceSolveTimes(10,50);
 produceSolveTimes(50,100);
@@ -284,6 +284,9 @@ function produceSolveTimes(size,limit)
     xlim([0,limit+1]);
 end
 ```
+  
+横坐标为迭代步数，纵坐标为相对误差。  
+  
 n=10:  
 ![](fig/10dim.svg)  
 
@@ -297,7 +300,8 @@ n=200:
 ![](fig/200dim.svg)  
 
 n=10、50、100、200时收敛速度 共轭梯度法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法 > Jacobi 迭代法 。  
-2. 比较 Jacobi 迭代法、Gauss-Seidel 迭代法、逐次超松弛迭代法、 共轭梯度法与高斯消去法、列主元消去法的计算时间。
+  
+**2. 比较 Jacobi 迭代法、Gauss-Seidel 迭代法、逐次超松弛迭代法、 共轭梯度法与高斯消去法、列主元消去法的计算时间。**
 ```matlab
 size=[10,50,100,200];
     % 每种计算100个
@@ -368,7 +372,8 @@ size=[10,50,100,200];
 高斯消去法和列主元消去法的计算时间远高于迭代法，列主元消去法略高于高斯消去法。在图像中难以观察到SOR的曲线，应移除高斯消去法和列主元消去法。  
 ![](fig/Compare_delGM.svg)  
 逐次超松弛迭代法（松弛因子取1.23）和 Gauss-Seidel 迭代法计算时间非常接近。当n=10、50时，计算时间 jacobi 迭代法 > 共轭梯度法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法。当n=100、200时，计算时间 jacobi 迭代法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法 > 共轭梯度法。  
-3. 改变逐次超松弛迭代法的松弛因子， 分析其对收敛速度的影响。
+  
+**3. 改变逐次超松弛迭代法的松弛因子， 分析其对收敛速度的影响。**
 
 
 ```matlab

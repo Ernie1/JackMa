@@ -439,11 +439,20 @@ n=200，最佳松弛因子为1.83:
 
 随着n的增大松弛因子也相应增大。松弛因子从1到最佳松弛因子之间递增时收敛速度平缓提升，松弛因子越接近2递增时速度迅速下降。
   
-****
-
+## 三
+### 问题描述
+在 Epinions 社交数据集(https://snap.stanford.edu/data/soc-Epinions1.html)中，每个网络节点可以选择信任其它节点。借鉴 Pagerank 的思想编写程序，对网络节点的受信任程度进行评分。
+### 算法设计
+Pagerank等式：
+![](fig/pr_1.svg)  
+p_i 是被研究的页面。d=0.85 被称为阻尼系数（damping factor），其意义是，在任意时刻，用户到达某页面后并继续向后浏览的概率，该数值是根据上网者使用浏览器书签的平均频率估算而得。1-d=0.15 是用户停止点击，随机跳到新URL的概率。M(p_i) 是链入 p_i 页面的集合，L(p_j) 是 p_j 链出页面的数量，而 N 是所有页面的数量。  
+PageRank值是一个特殊矩阵中的特征向量。这个特征向量为  
+![](fig/pr_2.svg)  
+R是等式的答案  
+![](fig/pr_3.svg)  
+如果 p_j 不链向 p_i ，l(p_i, p_j)等于0。  
+![](fig/pr_4.svg) 
 ```matlab
-% 在 Epinions 社交数据集(https://snap.stanford.edu/data/soc-Epinions1.html)中， 每个网络节点可以选择信任其它节点。
-% 借鉴 Pagerank 的思想编写程序，对网络节点的受信任程度进行评分。
 % start
 % 手动将soc-Epinions1.txt导入数据到socEpinions1，socEpinions1是table类型，先转为数组
 socEpinions1=table2array(socEpinions1);

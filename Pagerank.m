@@ -2,9 +2,9 @@
 % 借鉴 Pagerank 的思想编写程序，对网络节点的受信任程度进行评分。
 % start
 % 手动将soc-Epinions1.txt导入数据到socEpinions1，socEpinions1是table类型，先转为数组
-socEpinions1=table2array(socEpinions1);
+% socEpinions1=table2array(socEpinions1);
 % 由于数据的节点从0开始，而matlab索引从1开始，为了方便，先给数据的节点编号都加一
-socEpinions1=socEpinions1+1;
+socEpinions1=socEpinions1-1;
 % 统计每个节点发出数，即L(p_j)，存入socEpinions数组
 socEpinions=zeros(75888,1);
 for i=1:length(socEpinions1)
@@ -23,7 +23,7 @@ spy(A);
 % 用幂法求出R，得出PageRank
 R=ones(75888,1);
 d=0.85;
-other=(1-d)/7;
+other=(1-d)/75888;
 times=0;
 while 1
     times=times+1;

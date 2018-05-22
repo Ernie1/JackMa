@@ -457,7 +457,16 @@ R是等式的答案
 如果 p_j 不链向 p_i ，l(p_i, p_j)等于0。  
 ![](fig/pr_4.svg)  
   
-
+```
+Target: solve R
+Input: A, N, R_0(initial guess)
+    d := 0.85
+    other := (1 - d) / N
+    Loop until R stable
+        R_{k+1} := other + d * A * R_k
+    End Loop
+Output: R_{k+1}
+```
 
 ```matlab
 % start
@@ -483,7 +492,7 @@ spy(A);
 % 用幂法求出R，得出PageRank
 R=ones(75888,1);
 d=0.85;
-other=(1-d)/7;
+other=(1-d)/75888;
 times=0;
 while 1
     times=times+1;
@@ -507,3 +516,5 @@ end
 socEpinionsIn=[[0:75887]',socEpinionsIn];
 socEpinionsIn=sortrows(socEpinionsIn,2,'descend');
 ```
+
+![](fig/sparseMatrix.svg)

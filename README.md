@@ -112,9 +112,8 @@ end
 ### 问题描述
 求解线性方程组 Ax=b，其中 A 为 nxn 维的已知矩阵，b 为 n 维的已知向量，x 为 n 维的未知向量。A 为对称正定矩阵，其特征值服从独立同分布的 [0,1] 间的均匀分布; b 中的元素服从独立同分布的正态分布。
 ### 算法设计
-D L U 是什么？？？？？  
 **1. Jacobi 迭代法**  
-x=J*x_k+f，其中？？？？J=D^(-1)*(L+U)，f=D^(-1)*b 。
+x_{k+1} = J * x_k + f，其中 J = D^(-1) * (L+U)，f = D^(-1) * b 。
 ```matlab
 function [x,times]=Jacobi(A,b)
     dim=size(A,1);
@@ -142,7 +141,7 @@ function [x,times]=Jacobi(A,b)
 end
 ```
 **2. Gauss-Seidel 迭代法**  
-x=G*x_k+f，其中？？？？G=(D-L)^(-1)*U，f=D^(-1)*b 。
+x_{k+1} = G * x_k + f，其中 G = (D-L)^(-1) * U，f = D^(-1) * b 。
 ```matlab
 function [x,times]=GaussSeidel(A,b)
     dim=size(A,1);
@@ -170,7 +169,7 @@ function [x,times]=GaussSeidel(A,b)
 end
 ```
 **3. 逐次超松弛迭代法**  
-x=Lw*x_k+f，其中？？？？Lw=(D-w*L)\((1-w)*D+w*U)，f=w(D-wL)^(-1)b 。
+x_{k+1} = Lw * x_k + f，其中 Lw = (D - w * L) ^(-1) * ((1-w) * D + w * U)，f =w (D-wL)^(-1) * b 。
 ```matlab
 function [x,times]=SOR(A,b,w)
     dim=size(A,1);

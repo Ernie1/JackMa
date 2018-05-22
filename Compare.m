@@ -34,6 +34,7 @@ function compareSolveTime()
             GaussSeidel(A,b);
             time2=toc;
             tic;
+            % киЁзрРвстщх║1.23
             SOR(A,b,1.23);
             time3=toc;
             tic;

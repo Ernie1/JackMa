@@ -105,7 +105,7 @@ function [time1,time2] = produceSolveComputeTime(size)
 end
 ```
 ![](fig/Gau_MaxCol.svg)  
-观察计算时间，列主元消去法时间略长，因为涉及主元的寻找和行变换。
+列主元消去法时间略长，因为涉及主元的寻找和行变换。
 
 ## 二
 ### 问题描述
@@ -230,7 +230,7 @@ function [x,times]=CG(A,b)
     end
 end
 ```
-### 数值实验一
+### 数值实验
 1. 令 n=10、50、100、200，分别绘制出算法的收敛曲线，横坐标为迭代步数，纵坐标为相对误差。
 ```matlab
 produceSolveTimes(10,50);
@@ -284,18 +284,92 @@ function produceSolveTimes(size,limit)
     xlim([0,limit+1]);
 end
 ```
+n=10:  
 ![](fig/10dim.svg)  
-n=10  
 
+n=50:  
 ![](fig/50dim.svg)  
-n=50  
 
+n=100:  
 ![](fig/100dim.svg)  
-n=100  
 
+n=200:  
 ![](fig/200dim.svg)  
-n=200  
-观察图像，n=10、50、100、200时收敛速度 共轭梯度法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法 > Jacobi 迭代法 。
+
+n=10、50、100、200时收敛速度 共轭梯度法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法 > Jacobi 迭代法 。
+2. 比较 Jacobi 迭代法、Gauss-Seidel 迭代法、逐次超松弛迭代法、 共轭梯度法与高斯消去法、列主元消去法的计算时间。
+```matlab
+size=[10,50,100,200];
+    % 每种计算100个
+    times=100;
+    timeArr1=zeros(1,4);
+    timeArr2=zeros(1,4);
+    timeArr3=zeros(1,4);
+    timeArr4=zeros(1,4);
+    timeArr5=zeros(1,4);
+    timeArr6=zeros(1,4);
+    for j=1:4
+        for i=1:times
+            % 利用随机对角矩阵和随机正交矩阵生成随机对称正定矩阵A，同时满足2D-A正定
+            while 1
+                v=diag(rand(size(j),1));
+                u=orth(randn(size(j)));
+                A=u'*v*u;
+                % p1为0时A正定
+                [R,p1]=chol(A);
+                % 2D-A
+                [R,p2]=chol(2*diag(diag(A))-A);
+                if p1==0&&p2==0
+                    break;
+                end
+            end
+            x=rand(size(j),1);
+            b=A*x;
+            tic;
+            Jacobi(A,b);
+            time1=toc;
+            tic;
+            GaussSeidel(A,b);
+            time2=toc;
+            tic;
+            % 松弛因子暂取1.23
+            SOR(A,b,1.23);
+            time3=toc;
+            tic;
+            CG(A,b);
+            time4=toc;
+            tic;
+            GaussianElimination(A,b);
+            time5=toc;
+            tic;
+            EliminationWithMaximalColumnPivoting(A,b);
+            time6=toc;
+            timeArr1(j)=timeArr1(j)+time1;
+            timeArr2(j)=timeArr2(j)+time2;
+            timeArr3(j)=timeArr3(j)+time3;
+            timeArr4(j)=timeArr4(j)+time4;
+            timeArr5(j)=timeArr5(j)+time5;
+            timeArr6(j)=timeArr6(j)+time6;
+        end
+    end
+    % 平均
+    timeArr1=timeArr1/times;
+    timeArr2=timeArr2/times;
+    timeArr3=timeArr3/times;
+    timeArr4=timeArr4/times;
+    timeArr5=timeArr5/times;
+    timeArr6=timeArr6/times;
+    plot(size(:),timeArr1(:),'-',size(:),timeArr2(:),'-',size(:),timeArr3(:),'-',size(:),timeArr4(:),'-',size(:),timeArr5(:),'-',size(:),timeArr6(:),'-');
+    xlim([0,210]);
+    set(gca,'XTick',[10,50,100,200]);
+    legend('Jacobi','Gauss-Seidel','SOR','CG','GaussianElimination','EliminationWithMaximalColumnPivoting');
+```
+![](fig/Compare.svg)  
+高斯消去法和列主元消去法的计算时间远高于迭代法，列主元消去法略高于高斯消去法。在图像中难以观察到SOR的曲线，应移除高斯消去法和列主元消去法。  
+![](fig/Compare_delGM.svg)  
+逐次超松弛迭代法（松弛因子取1.23）和 Gauss-Seidel 迭代法计算时间非常接近。当n=10、50时，计算时间 jacobi 迭代法 > 共轭梯度法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法。当n=100、200时，计算时间 jacobi 迭代法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法 > 共轭梯度法。
+3. 改变逐次超松弛迭代法的松弛因子， 分析其对收敛速度的影响。
+
 
 ```matlab
 % 在 Epinions 社交数据集(https://snap.stanford.edu/data/soc-Epinions1.html)中， 每个网络节点可以选择信任其它节点。

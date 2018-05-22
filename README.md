@@ -169,7 +169,7 @@ function [x,times]=GaussSeidel(A,b)
 end
 ```
 **3. 逐次超松弛迭代法**  
-x_{k+1} = Lw * x_k + f，其中 Lw = (D - w * L) ^(-1) * ((1-w) * D + w * U)，f =w (D-wL)^(-1) * b 。
+x_{k+1} = Lw * x_k + f，其中 Lw = (D - w * L)^(-1) * ((1-w) * D + w * U)，f =w * (D-wL)^(-1) * b 。
 ```matlab
 function [x,times]=SOR(A,b,w)
     dim=size(A,1);
@@ -548,4 +548,6 @@ R=sortrows(R,2,'descend');
 10 | 725 | 0.00108030426473196
 ... | ... | ...  
   
-列 1 为网络节点编号，列 2 为受信任程度的评分。
+列 1 为网络节点编号，列 2 为受信任程度的评分。  
+  
+[完整结果](Pagerank_result.mat)

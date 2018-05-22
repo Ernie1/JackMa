@@ -11,7 +11,8 @@ function produceSolveTimes(size)
     timesArr=zeros(1,100);
     w=zeros(1,100);
     for j=1:100
-       w(j)=1+0.01*(j-1); 
+        % 松弛因子测试范围为[1,2)，精度为1e-2
+        w(j)=1+0.01*(j-1); 
     end
     for i=1:times
         % 利用随机对角矩阵和随机正交矩阵生成随机对称正定矩阵A，同时满足2D-A正定
@@ -35,6 +36,7 @@ function produceSolveTimes(size)
     end
     % 平均
     timesArr=timesArr/times;
+    % 标出最少迭代次数对应的松弛因子
     min_y=min(timesArr);
     min_x=1+0.01*(find(timesArr==min_y)-1);
     figure;

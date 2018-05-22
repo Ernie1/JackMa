@@ -282,13 +282,13 @@ function produceSolveTimes(size,limit)
 end
 ```
 横坐标为迭代步数，纵坐标为相对误差的收敛曲线。
-![](fig/10dim)  
+![](fig/10dim.svg)  
 n=10  
-![](fig/50dim)  
+![](fig/50dim.svg)  
 n=50  
-![](fig/100dim)  
+![](fig/100dim.svg)  
 n=100  
-![](fig/200dim)  
+![](fig/200dim.svg)  
 n=200
 
 ```matlab

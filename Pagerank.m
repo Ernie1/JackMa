@@ -38,11 +38,3 @@ end
 R=[[0:75887]',R];
 % 进行降序排序
 R=sortrows(R,2,'descend');
-% 与直接通过各节点链入数的排序进行比较
-socEpinionsIn=zeros(75888,1);
-for i=1:length(socEpinions1)
-    tem=socEpinions1(i,2);
-    socEpinionsIn(tem)=socEpinionsIn(tem)+1;
-end
-socEpinionsIn=[[0:75887]',socEpinionsIn];
-socEpinionsIn=sortrows(socEpinionsIn,2,'descend');

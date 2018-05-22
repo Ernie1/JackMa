@@ -457,8 +457,9 @@ R是等式的答案
 如果 p_j 不链向 p_i ，l(p_i, p_j)等于0。  
 ![](fig/pr_4.svg)  
   
+用幂法求出这个特征向量，伪代码：
 ```
-Target: solve R
+Target: solve R
 Input: A, N, R_0(initial guess)
     d := 0.85
     other := (1 - d) / N
@@ -467,29 +468,41 @@ Input: A, N, R_0(initial guess)
     End Loop
 Output: R_{k+1}
 ```
-
+### 数值实验
+手动将soc-Epinions1.txt导入数据到socEpinions1，socEpinions1是table类型，先转为数组。
 ```matlab
-% start
-% 手动将soc-Epinions1.txt导入数据到socEpinions1，socEpinions1是table类型，先转为数组
 socEpinions1=table2array(socEpinions1);
-% 由于数据的节点从0开始，而matlab索引从1开始，为了方便，先给数据的节点编号都加一
+```
+由于数据的节点从0开始，而matlab索引从1开始，为了方便，先给数据的节点编号都加一。
+```matlab
 socEpinions1=socEpinions1+1;
-% 统计每个节点发出数，即L(p_j)，存入socEpinions数组
+```
+统计每个节点发出数，即L(p_j)，存入socEpinions数组。
+```matlab
 socEpinions=zeros(75888,1);
 for i=1:length(socEpinions1)
     tem=socEpinions1(i,1);
     socEpinions(tem)=socEpinions(tem)+1;
 end
-% 每个元素变成倒数，socEpinions(p_i)即为特殊矩阵中l(:,p_i)不为0时的值，保证链出概率和为1
+```
+每个元素变成倒数，socEpinions(p_i)即为特殊矩阵中l(:,p_i)不为0时的值，保证链出概率和为1。
+```matlab
 socEpinions=1./socEpinions;
-% 创建稀疏矩阵A即特殊矩阵
+```
+创建稀疏矩阵A即特殊矩阵。
+```matlab
 A=sparse(75888,75888);
 for i=1:length(socEpinions1)
     A(sub2ind(size(A),socEpinions1(i,2),socEpinions1(i,1)))=socEpinions(socEpinions1(i,1));
 end
-% 观察一下A
+```
+观察一下A。
+```matlab
 spy(A);
-% 用幂法求出R，得出PageRank
+```
+![](fig/sparseMatrix.svg)  
+用幂法求出R，得出PageRank。
+```matlab
 R=ones(75888,1);
 d=0.85;
 other=(1-d)/75888;
@@ -503,18 +516,28 @@ while 1
     end
     R=R_kp1;
 end
-% 给R加上原来从0开始的节点编号
-R=[[0:75887]',R];
-% 进行降序排序
-R=sortrows(R,2,'descend');
-% 与直接通过各节点链入数的排序进行比较
-socEpinionsIn=zeros(75888,1);
-for i=1:length(socEpinions1)
-    tem=socEpinions1(i,2);
-    socEpinionsIn(tem)=socEpinionsIn(tem)+1;
-end
-socEpinionsIn=[[0:75887]',socEpinionsIn];
-socEpinionsIn=sortrows(socEpinionsIn,2,'descend');
 ```
-
-![](fig/sparseMatrix.svg)
+运算结束时times为93，迭代了93次。  
+  
+给R加上原来从0开始的节点编号。
+```matlab
+R=[[0:75887]',R];
+```
+进行降序排序。
+```matlab
+R=sortrows(R,2,'descend');
+```
+&nbsp; | 1 | 2
+--- | --- | ---
+1 | 18	| 0.00326588223871137
+2 | 737	| 0.00227260930891926
+3 | 118	| 0.00152987843912561
+4 | 1719 | 0.00149663915404835
+5 | 136	| 0.00143141754960488
+6 | 790	| 0.00141712706366433
+7 | 143	| 0.00140954256074431
+8 | 40	| 0.00131762235101538
+9 | 1619 | 0.00110707964778898
+10 | 725 | 0.00108030426473196
+... | ... | ...
+列1为网络节点编号，列2为受信任程度的评分。

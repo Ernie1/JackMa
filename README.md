@@ -67,7 +67,8 @@ function x = EliminationWithMaximalColumnPivoting(A,b)
 end
 ```
 ### 数值实验
-令 n=10、50、100、200，测试计算时间并绘制曲线。
+令 n=10、50、100、200，测试计算时间并绘制曲线。  
+[完整代码](Gau_MaxCol.m)  
 ```matlab
 main();
 
@@ -104,7 +105,6 @@ function [time1,time2] = produceSolveComputeTime(size)
     time2=toc;
 end
 ```
-[完整代码](Gau_MaxCol.m)  
 ![](fig/Gau_MaxCol.svg)  
 列主元消去法时间略长，因为涉及主元的寻找和行变换。
 
@@ -232,7 +232,8 @@ function [x,times]=CG(A,b)
 end
 ```
 ### 数值实验
-**1. 令 n=10、50、100、200，分别绘制出算法的收敛曲线**
+**1. 令 n=10、50、100、200，分别绘制出算法的收敛曲线**  
+[完整代码](Convergence.m)  
 ```matlab
 produceSolveTimes(10,50);
 produceSolveTimes(50,100);
@@ -302,7 +303,8 @@ n=200:
 
 n=10、50、100、200时收敛速度 共轭梯度法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法 > Jacobi 迭代法 。  
   
-**2. 比较 Jacobi 迭代法、Gauss-Seidel 迭代法、逐次超松弛迭代法、 共轭梯度法与高斯消去法、列主元消去法的计算时间。**
+**2. 比较 Jacobi 迭代法、Gauss-Seidel 迭代法、逐次超松弛迭代法、 共轭梯度法与高斯消去法、列主元消去法的计算时间。**  
+[完整代码](Compare.m)  
 ```matlab
 size=[10,50,100,200];
     % 每种计算100个
@@ -374,7 +376,8 @@ size=[10,50,100,200];
 ![](fig/Compare_delGM.svg)  
 逐次超松弛迭代法（松弛因子取1.23）和 Gauss-Seidel 迭代法计算时间非常接近。当n=10、50时，计算时间 jacobi 迭代法 > 共轭梯度法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法。当n=100、200时，计算时间 jacobi 迭代法 > 逐次超松弛迭代法（松弛因子取1.23） > Gauss-Seidel 迭代法 > 共轭梯度法。  
   
-**3. 改变逐次超松弛迭代法的松弛因子， 分析其对收敛速度的影响。**
+**3. 改变逐次超松弛迭代法的松弛因子， 分析其对收敛速度的影响。**  
+[完整代码](SOR_factor.m)  
 ```matlab
 produceSolveTimes(10);
 produceSolveTimes(50);
@@ -470,6 +473,8 @@ Input: A, N, R_0(initial guess)
 Output: R_{k+1}
 ```
 ### 数值实验
+[完整代码](Pagerank.m)  
+  
 手动将 soc-Epinions1.txt 导入数据到 socEpinions1，socEpinions1 是 table 类型，先转为数组。
 ```matlab
 socEpinions1=table2array(socEpinions1);

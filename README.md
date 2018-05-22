@@ -199,7 +199,7 @@ function [x,times]=SOR(A,b,w)
 end
 ```
 4. 共轭梯度法  
-![](fig/CGalgorithm.png)
+<img src="fig/CGalgorithm.png" width = "60%" height = "60%" />
 ```matlab
 function [x,times]=CG(A,b)
     dim=size(A,1);
@@ -283,13 +283,13 @@ end
 ```
 横坐标为迭代步数，纵坐标为相对误差的收敛曲线。
 ![](fig/10dim.svg)  
-n=10  
+n=10
 ![](fig/50dim.svg)  
-n=50  
+n=50
 ![](fig/100dim.svg)  
-n=100  
+n=100
 ![](fig/200dim.svg)  
-n=200
+n=200
 
 ```matlab
 % 在 Epinions 社交数据集(https://snap.stanford.edu/data/soc-Epinions1.html)中， 每个网络节点可以选择信任其它节点。

@@ -1,17 +1,17 @@
-
-# you can change the following hyper-parameter
-penalty_factor = 0.0005
-learning_rate = [0.001, 0.002, 0.003, 0.004]
-max_epoch = 100
-sub_samples = 1000
-val_sub_samples = 2000
-n_features = 123
-# ------------------------------------------------------------------
-
 import requests
 from sklearn.datasets import load_svmlight_file
 from io import BytesIO
 import numpy
+
+# ------------------------------------------------------------------
+# you can change the following hyper-parameter
+penalty_factor = 10
+learning_rate = numpy.arange(0.0001, 0.0005, 0.0001)
+max_epoch = 100
+sub_samples = 500
+val_sub_samples = 4000
+n_features = 123
+# ------------------------------------------------------------------
 
 # load the dataset
 def get_dataset(r):
@@ -67,9 +67,9 @@ for cur_learning_rate in learning_rate:
             indicator.append(1 if item < 1 else 0)
     
         # calculate the gradient
-        G = penalty_factor * w - numpy.divide(numpy.dot(numpy.transpose(X_train_sub), numpy.dot(numpy.diag(indicator), y_train_sub)), sub_samples)
+        G = w - penalty_factor * numpy.divide(numpy.dot(numpy.transpose(X_train_sub), numpy.dot(numpy.diag(indicator), y_train_sub)), sub_samples)
         G = -G
-        G_b = numpy.divide(numpy.dot(indicator, y_train_sub), sub_samples)
+        G_b = penalty_factor * numpy.divide(numpy.dot(indicator, y_train_sub), sub_samples)
 
         # update the parameters
         w += cur_learning_rate * G
@@ -81,10 +81,10 @@ for cur_learning_rate in learning_rate:
         loss_val = 0
         for item in ywx:
             loss_val += 1 - item if 1 - item > 0 else 0
-
-        loss_val = penalty_factor / 2 * numpy.square(numpy.linalg.norm(w, 2)) + loss_val / val_sub_samples
+            
+        loss_val = numpy.dot(numpy.transpose(w), w)[0][0] / 2 + penalty_factor * loss_val / val_sub_samples
         losses_val_with_cur_learning_rate.append(loss_val)
-
+        print(loss_val)
     losses_val.append(losses_val_with_cur_learning_rate)
 
 ## draw the figure

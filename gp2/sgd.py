@@ -2,11 +2,12 @@ import requests
 from sklearn.datasets import load_svmlight_file
 from io import BytesIO
 import numpy
+from sklearn.metrics import classification_report
 
 # ------------------------------------------------------------------
 # you can change the following hyper-parameter
 penalty_factor = 10
-learning_rate = numpy.arange(0.0001, 0.0005, 0.0001)
+learning_rate = numpy.arange(0.001, 0.005, 0.001)
 max_epoch = 100
 sub_samples = 500
 val_sub_samples = 4000
@@ -20,7 +21,7 @@ def get_dataset(r):
     # preprocess the dataset
     X = X.toarray()
     n_samples = X.shape[0]
-    X = numpy.column_stack((X, numpy.ones((n_samples, 1))))
+    #X = numpy.column_stack((X, numpy.ones((n_samples, 1))))
     y = y.reshape((-1, 1))
     return X, y, n_samples
 X_train, y_train, train_samples = get_dataset(requests.get('''https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/a9a'''))
@@ -42,7 +43,7 @@ for cur_learning_rate in learning_rate:
     losses_val_with_cur_learning_rate = []
     
     # select different initializing method
-    w = numpy.zeros((n_features + 1, 1))  # initialize with zeros
+    w = numpy.zeros((n_features, 1))  # initialize with zeros
     # w = numpy.random.random((n_features + 1, 1))  # initialize with random numbers
     # w = numpy.random.normal(1, 1, size=(n_features + 1, 1))  # initialize with zero normal distribution
     
@@ -76,7 +77,8 @@ for cur_learning_rate in learning_rate:
         b += cur_learning_rate * G_b
 
         # predict under the validation set
-        ywx = numpy.dot(numpy.diag(numpy.add(numpy.dot(X_train_sub, w), b).flatten()), y_train_sub)
+        ywx = numpy.dot(numpy.diag(numpy.add(numpy.dot(X_val_sub, w), b).flatten()), y_val_sub)
+
         # calculate the absolute differences
         loss_val = 0
         for item in ywx:
@@ -84,8 +86,15 @@ for cur_learning_rate in learning_rate:
             
         loss_val = numpy.dot(numpy.transpose(w), w)[0][0] / 2 + penalty_factor * loss_val / val_sub_samples
         losses_val_with_cur_learning_rate.append(loss_val)
-        print(loss_val)
+    
     losses_val.append(losses_val_with_cur_learning_rate)
+
+    ## show report
+    y_predict = []
+    for item in ywx:
+        y_predict.append(1 if item < 0 else -1)
+    #target_names = ['class 0', 'class 1']
+    print(classification_report(numpy.transpose(y_val_sub).flatten(), y_predict))
 
 ## draw the figure
 import matplotlib.pyplot as plt
@@ -98,4 +107,4 @@ plt.ylabel("validation loss")
 plt.legend()
 plt.title("the graph of absolute diff value varing with the number of iterations.")
 plt.show()
-## plt.savefig("result.png")
+# plt.savefig("result.png")
